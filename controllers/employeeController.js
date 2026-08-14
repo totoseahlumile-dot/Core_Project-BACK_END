@@ -1,0 +1,59 @@
+import * as Employee from '../models/employeeModel.js';
+
+export const getEmployees = async (req, res) => {
+  try {
+    const employees = await Employee.getAllEmployees();
+    res.json(employees);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch employees' });
+  }
+};
+
+export const getEmployee = async (req, res) => {
+  try {
+    const employee = await Employee.getEmployeeById(req.params.id);
+    if (!employee) return res.status(404).json({ error: 'Employee not found' });
+    res.json(employee);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch employee' });
+  }
+};
+
+export const addEmployee = async (req, res) => {
+  const { employee_number, first_name, last_name, email, position_id, salary, hire_date } = req.body;
+  if (!employee_number || !first_name || !last_name || !email || !position_id || salary == null || !hire_date) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+  if (salary < 0) {
+    return res.status(400).json({ error: 'Salary cannot be negative' });
+  }
+  try {
+    const id = await Employee.createEmployee(req.body);
+    res.status(201).json({ employee_id: id, message: 'Employee created' });
+  } catch (err) {
+    if (err.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({ error: 'Employee number or email already exists' });
+    }
+    res.status(500).json({ error: 'Failed to create employee' });
+  }
+};
+
+export const editEmployee = async (req, res) => {
+  try {
+    const affected = await Employee.updateEmployee(req.params.id, req.body);
+    if (!affected) return res.status(404).json({ error: 'Employee not found' });
+    res.json({ message: 'Employee updated' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update employee' });
+  }
+};
+
+export const removeEmployee = async (req, res) => {
+  try {
+    const affected = await Employee.terminateEmployee(req.params.id);
+    if (!affected) return res.status(404).json({ error: 'Employee not found' });
+    res.json({ message: 'Employee marked as terminated' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to terminate employee' });
+  }
+};
