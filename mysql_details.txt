@@ -1,3 +1,0 @@
-user = root
-host = 3307
-password = 1ntheEnd)
