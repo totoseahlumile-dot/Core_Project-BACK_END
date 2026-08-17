@@ -91,44 +91,16 @@ CREATE INDEX idx_positions_department ON positions(department_id);
 
 
 INSERT INTO positions (department_id, position_title, description) VALUES 
-((SELECT department_id FROM departments WHERE department_name = 
-'Development'), 'Software Engineer', 'Develops and maintains software'), 
-((SELECT department_id FROM departments WHERE department_name = 'HR'), 'HR 
-Manager', 'Manages HR operations'), 
-((SELECT department_id FROM departments WHERE department_name = 'QA'), 
-'Quality Analyst', 'Tests software and processes'), 
-((SELECT department_id FROM departments WHERE department_name = 'Sales'), 
-'Sales Representative', 'Handles sales activities'), 
-((SELECT department_id FROM departments WHERE department_name = 
-'Marketing'), 'Marketing Specialist', 'Manages marketing activities'), 
-((SELECT department_id FROM departments WHERE department_name = 'Design'), 
-'UI/UX Designer', 'Designs user interfaces and experiences'), 
-((SELECT department_id FROM departments WHERE department_name = 'IT'), 
-'DevOps Engineer', 'Manages infrastructure and deployments'), 
-((SELECT department_id FROM departments WHERE department_name = 
-'Marketing'), 'Content Strategist', 'Plans content strategy'), 
-((SELECT department_id FROM departments WHERE department_name = 
-'Finance'), 'Accountant', 'Manages financial records'), 
-((SELECT department_id FROM departments WHERE department_name = 
-'Support'), 'Customer Support Lead', 'Leads customer support'); 
-
-INSERT INTO moderntech_hr.positions
-    (department_id, position_title, description)
-SELECT
-    department_id,
-    'HR Manager',
-    'Manages HR operations'
-FROM moderntech_hr.departments
-WHERE department_name = 'HR';
-
-SELECT
-    p.position_id,
-    p.position_title,
-    d.department_name
-FROM moderntech_hr.positions p
-JOIN moderntech_hr.departments d
-    ON p.department_id = d.department_id
-WHERE p.position_title = 'HR Manager';
+((SELECT department_id FROM departments WHERE department_name = 'Development'), 'Software Engineer', 'Develops and maintains software'), 
+((SELECT department_id FROM departments WHERE department_name = 'HR'), 'HR Manager', 'Manages HR operations'), 
+((SELECT department_id FROM departments WHERE department_name = 'QA'), 'Quality Analyst', 'Tests software and processes'), 
+((SELECT department_id FROM departments WHERE department_name = 'Sales'), 'Sales Representative', 'Handles sales activities'), 
+((SELECT department_id FROM departments WHERE department_name = 'Marketing'), 'Marketing Specialist', 'Manages marketing activities'), 
+((SELECT department_id FROM departments WHERE department_name = 'Design'), 'UI/UX Designer', 'Designs user interfaces and experiences'), 
+((SELECT department_id FROM departments WHERE department_name = 'IT'), 'DevOps Engineer', 'Manages infrastructure and deployments'), 
+((SELECT department_id FROM departments WHERE department_name = 'Marketing'), 'Content Strategist', 'Plans content strategy'), 
+((SELECT department_id FROM departments WHERE department_name = 'Finance'), 'Accountant', 'Manages financial records'), 
+((SELECT department_id FROM departments WHERE department_name = 'Support'), 'Customer Support Lead', 'Leads customer support'); 
 
 -- EMPLOYEES
 CREATE TABLE employees (
@@ -317,7 +289,7 @@ FROM roles WHERE role_name='HR Manager')
 ELSE (SELECT role_id FROM roles WHERE role_name='Employee') 
 END, 
 e.email, 
-'$2b$10$REPLACE_WITH_BCRYPT_HASH' 
+'$2b$10$4XaYfMWFBOCLkNwkVQ4OYu9JDhylZrK.6sHMyrfaRierkXYaoGGFu' 
 FROM employees e; 
 
 -- ATTENDANCE
@@ -467,7 +439,6 @@ paid BOOLEAN NOT NULL DEFAULT TRUE,
 default_days_per_year DECIMAL(5,2) NOT NULL DEFAULT 0,
 CONSTRAINT chk_leave_days CHECK (default_days_per_year >= 0)
 ) ENGINE=InnoDB;
-SELECT * FROM moderntech_hr.leave_types;
 
 INSERT INTO leave_types (leave_type_name, description, paid, 
 default_days_per_year) VALUES 
