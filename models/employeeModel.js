@@ -2,7 +2,7 @@ import db from '../config/db.js';
 
 export const getAllEmployees = async () => {
   const [rows] = await db.query(
-    'SELECT * FROM vw_employee_directory ORDER BY last_name, first_name'
+    'SELECT * FROM vw_employee_directory ORDER BY employee_name'
   );
   return rows;
 };

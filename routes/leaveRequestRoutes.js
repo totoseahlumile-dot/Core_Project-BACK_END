@@ -1,16 +1,18 @@
 import express from 'express';
+import {
+  getLeaveRequests,
+  getLeaveRequest,
+  addLeaveRequest,
+  editLeaveRequest,
+  removeLeaveRequest,
+} from '../controllers/leaveRequestController.js';
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
-  try {
-    res.json({
-      success: true,
-      message: 'Leave requests table is not yet implemented in the database schema.',
-    });
-  } catch (err) {
-    next(err);
-  }
-});
+router.get('/', getLeaveRequests);
+router.get('/:id', getLeaveRequest);
+router.post('/', addLeaveRequest);
+router.put('/:id', editLeaveRequest);
+router.delete('/:id', removeLeaveRequest);
 
 export default router;
