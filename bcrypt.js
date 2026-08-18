@@ -1,15 +1,26 @@
-// npm install bcrypt
+// npm install bcrypt mysql2 dotenv
+// npm install express
+const mysql = require('mysql2/promise');
+require('dotenv').config();
+
+const pool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: 'moderntech_hr',
+    waitForConnections: true,
+    connectionLimit: 10
+});
+
+module.exports = pool;
 
 const bcrypt = require('bcrypt');
 
-const password = 'password123'
-const saltRounds = 10;
+async function generateHash(password) {
+  const hash = await bycrypt.hash(password, 10);
 
-bcrypt.hash(password, saltRounds, (err, hash) => {
-  if (err) {
-    console.error(err);
-    return
-  }
-  console.log(hash);
-  
-})
+  console.log('Password:', password);
+  console.log('Hash:', hash);  
+}
+
+generateHash('YourPassword123!')
