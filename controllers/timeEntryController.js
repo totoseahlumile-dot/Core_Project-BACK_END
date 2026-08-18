@@ -20,9 +20,9 @@ export const getTimeEntry = async (req, res, next) => {
 };
 
 export const addTimeEntry = async (req, res, next) => {
-  const { employee_id, work_date, clock_in, clock_out } = req.body;
-  if (!employee_id || !work_date) {
-    return res.status(400).json({ error: 'Employee ID and work date are required' });
+  const { employee_id, project_name, task_name, start_time } = req.body;
+  if (!employee_id || !project_name || !task_name || !start_time) {
+    return res.status(400).json({ error: 'Employee ID, project name, task name, and start time are required' });
   }
 
   try {

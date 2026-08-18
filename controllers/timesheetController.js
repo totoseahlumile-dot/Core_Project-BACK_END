@@ -20,9 +20,9 @@ export const getTimesheet = async (req, res, next) => {
 };
 
 export const addTimesheet = async (req, res, next) => {
-  const { employee_id, week_start, week_end } = req.body;
-  if (!employee_id || !week_start || !week_end) {
-    return res.status(400).json({ error: 'Employee ID, week start, and week end are required' });
+  const { employee_id, work_date } = req.body;
+  if (!employee_id || !work_date) {
+    return res.status(400).json({ error: 'Employee ID and work date are required' });
   }
 
   try {

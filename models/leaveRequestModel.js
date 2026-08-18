@@ -22,19 +22,25 @@ export const createLeaveRequest = async (data) => {
     start_date,
     end_date,
     reason,
-    status,
-    reviewed_by,
-    reviewed_at,
   } = data;
 
   const [result] = await db.query(
     `INSERT INTO leave_requests (
-      employee_id, leave_type_id, start_date, end_date,
-      reason, status, reviewed_by, reviewed_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    [employee_id, leave_type_id, start_date, end_date, reason || null, status || 'Pending', reviewed_by || null, reviewed_at || null]
+      employee_id, leave_type_id, start_date, end_date, reason
+    ) VALUES (?, ?, ?, ?, ?)`,
+    [employee_id, leave_type_id, start_date, end_date, reason || null]
   );
   return result.insertId;
+};
+
+export const updateLeaveRequestStatus = async (id, status, reviewedBy) => {
+  const [result] = await db.query(
+    `UPDATE leave_requests
+     SET status = ?, reviewed_by = ?, reviewed_at = CURRENT_TIMESTAMP
+     WHERE leave_request_id = ?`,
+    [status, reviewedBy, id]
+  );
+  return result.affectedRows;
 };
 
 export const updateLeaveRequest = async (id, data) => {

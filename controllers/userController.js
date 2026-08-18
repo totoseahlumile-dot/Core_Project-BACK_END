@@ -20,9 +20,11 @@ export const getUser = async (req, res, next) => {
 };
 
 export const addUser = async (req, res, next) => {
-  const { user_name, user_email } = req.body;
-  if (!user_name || !user_email) {
-    return res.status(400).json({ error: 'Username and email are required' });
+  const { employee_id, role_id, email, password_hash } = req.body;
+  if (!employee_id || !role_id || !email || !password_hash) {
+    return res.status(400).json({
+      error: 'employee_id, role_id, email, and password_hash are required',
+    });
   }
 
   try {
@@ -34,6 +36,11 @@ export const addUser = async (req, res, next) => {
 };
 
 export const editUser = async (req, res, next) => {
+  const updatableFields = ['employee_id', 'role_id', 'email', 'password_hash', 'is_active', 'last_login'];
+  if (!updatableFields.some((field) => req.body[field] !== undefined)) {
+    return res.status(400).json({ error: 'At least one user field is required' });
+  }
+
   try {
     const affected = await User.updateUser(req.params.id, req.body);
     if (!affected) return res.status(404).json({ error: 'User not found' });

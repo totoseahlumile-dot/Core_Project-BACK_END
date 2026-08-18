@@ -26,10 +26,17 @@ export const addPayroll = async (req, res, next) => {
     return res.status(400).json({ error: 'Employee ID, pay period dates, and base salary are required' });
   }
 
+  if (!Number.isFinite(Number(base_salary)) || Number(base_salary) < 0) {
+    return res.status(400).json({ error: 'Base salary must be a non-negative number' });
+  }
+
   try {
     const id = await Payroll.createPayroll(req.body);
     res.status(201).json({ payroll_id: id, message: 'Payroll record created' });
   } catch (err) {
+    if (err.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({ error: 'A payroll record already exists for this employee and pay period' });
+    }
     next(err);
   }
 };

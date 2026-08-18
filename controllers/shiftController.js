@@ -20,9 +20,9 @@ export const getShift = async (req, res, next) => {
 };
 
 export const addShift = async (req, res, next) => {
-  const { shift_name, start_time, end_time } = req.body;
-  if (!shift_name || !start_time || !end_time) {
-    return res.status(400).json({ error: 'Shift name, start time, and end time are required' });
+  const { employee_id, shift_date, start_time, end_time } = req.body;
+  if (!employee_id || !shift_date || !start_time || !end_time) {
+    return res.status(400).json({ error: 'Employee ID, shift date, start time, and end time are required' });
   }
 
   try {
