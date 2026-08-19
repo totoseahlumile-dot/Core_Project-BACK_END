@@ -1,3 +1,4 @@
+ 
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 
@@ -20,3 +21,11 @@ const pool = mysql.createPool({
 });
 
 export default pool;
+
+const mysql = require('mysql2/promise');
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+
+
+module.exports = pool;
+ 
