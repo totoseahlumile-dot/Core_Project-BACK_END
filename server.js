@@ -19,12 +19,17 @@ import userRoutes from './routes/userRoutes.js';
 import roleRoutes from './routes/roleRoutes.js';
 import permissionRoutes from './routes/permissionRoutes.js';
 import rolePermissionRoutes from './routes/rolePermissionRoutes.js';
+import authRoutes from './routes/authRoutes.js'; // ADD THIS
 import db from './config/db.js';
 import errorHandler, { notFoundHandler } from './middleware/errorHandler.js';
 
 const app = express();
 app.use(express.json());
 
+// Public routes (no authentication required)
+app.use('/api/auth', authRoutes);
+
+// Protected routes (authentication required)
 app.use('/api/employees', employeeRoutes);
 app.use('/api/departments', departmentRoutes);
 app.use('/api/positions', positionRoutes);

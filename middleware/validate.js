@@ -334,3 +334,84 @@ export const validatePosition = (req, res, next) => {
   }
   next();
 };
+
+// Login validation
+export const validateLogin = (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!email || email.trim().length === 0) {
+    return res.status(400).json({ error: 'Email is required' });
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'Invalid email format' });
+  }
+
+  if (!password || password.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters' });
+  }
+
+  next();
+};
+
+// Registration validation
+export const validateRegister = (req, res, next) => {
+  const { email, password, first_name, last_name } = req.body;
+
+  if (!email || email.trim().length === 0) {
+    return res.status(400).json({ error: 'Email is required' });
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'Invalid email format' });
+  }
+
+  if (!password || password.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters' });
+  }
+
+  // Check for strong password (optional)
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({ 
+      error: 'Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character' 
+    });
+  }
+
+  if (!first_name || first_name.trim().length === 0) {
+    return res.status(400).json({ error: 'First name is required' });
+  }
+
+  if (!last_name || last_name.trim().length === 0) {
+    return res.status(400).json({ error: 'Last name is required' });
+  }
+
+  next();
+};
+
+// Change Password validation
+export const validateChangePassword = (req, res, next) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword) {
+    return res.status(400).json({ error: 'Current password is required' });
+  }
+
+  if (!newPassword || newPassword.length < 6) {
+    return res.status(400).json({ error: 'New password must be at least 6 characters' });
+  }
+
+  // Strong password validation
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  if (!passwordRegex.test(newPassword)) {
+    return res.status(400).json({ 
+      error: 'Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character' 
+    });
+  }
+
+  if (currentPassword === newPassword) {
+    return res.status(400).json({ error: 'New password must be different from current password' });
+  }
+
+  next();
+};
