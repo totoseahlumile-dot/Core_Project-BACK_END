@@ -66,3 +66,4 @@ export const deleteLeaveRequest = async (id) => {
   );
   return result.affectedRows;
 };
+
