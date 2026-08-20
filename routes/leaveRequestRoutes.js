@@ -6,13 +6,14 @@ import {
   editLeaveRequest,
   removeLeaveRequest,
 } from '../controllers/leaveRequestController.js';
+import { validateId, validateLeaveRequest } from '../middleware/validators.js';
 
 const router = express.Router();
 
 router.get('/', getLeaveRequests);
-router.get('/:id', getLeaveRequest);
-router.post('/', addLeaveRequest);
-router.put('/:id', editLeaveRequest);
-router.delete('/:id', removeLeaveRequest);
+router.get('/:id', validateId, getLeaveRequest);
+router.post('/', validateLeaveRequest, addLeaveRequest);
+router.put('/:id', validateId, validateLeaveRequest, editLeaveRequest);
+router.delete('/:id', validateId, removeLeaveRequest);
 
 export default router;

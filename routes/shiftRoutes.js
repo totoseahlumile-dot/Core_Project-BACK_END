@@ -6,13 +6,14 @@ import {
   editShift,
   removeShift,
 } from '../controllers/shiftController.js';
+import { validateId, validateShift } from '../middleware/validators.js';
 
 const router = express.Router();
 
 router.get('/', getShifts);
-router.get('/:id', getShift);
-router.post('/', addShift);
-router.put('/:id', editShift);
-router.delete('/:id', removeShift);
+router.get('/:id', validateId, getShift);
+router.post('/', validateShift, addShift);
+router.put('/:id', validateId, validateShift, editShift);
+router.delete('/:id', validateId, removeShift);
 
 export default router;

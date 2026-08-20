@@ -6,13 +6,14 @@ import {
   editDepartment,
   removeDepartment,
 } from '../controllers/departmentController.js';
+import { validateId, validateDepartment } from '../middleware/validators.js';
 
 const router = express.Router();
 
 router.get('/', getDepartments);
-router.get('/:id', getDepartment);
-router.post('/', addDepartment);
-router.put('/:id', editDepartment);
-router.delete('/:id', removeDepartment);
+router.get('/:id', validateId, getDepartment);
+router.post('/', validateDepartment, addDepartment);
+router.put('/:id', validateId, validateDepartment, editDepartment);
+router.delete('/:id', validateId, removeDepartment);
 
 export default router;

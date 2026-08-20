@@ -6,13 +6,14 @@ import {
   editPerformanceReview,
   removePerformanceReview,
 } from '../controllers/performanceReviewController.js';
+import { validateId, validatePerformanceReview } from '../middleware/validators.js';
 
 const router = express.Router();
 
 router.get('/', getPerformanceReviews);
-router.get('/:id', getPerformanceReview);
-router.post('/', addPerformanceReview);
-router.put('/:id', editPerformanceReview);
-router.delete('/:id', removePerformanceReview);
+router.get('/:id', validateId, getPerformanceReview);
+router.post('/', validatePerformanceReview, addPerformanceReview);
+router.put('/:id', validateId, validatePerformanceReview, editPerformanceReview);
+router.delete('/:id', validateId, removePerformanceReview);
 
 export default router;

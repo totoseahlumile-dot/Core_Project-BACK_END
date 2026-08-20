@@ -6,13 +6,14 @@ import {
   editEmployeeSetting,
   removeEmployeeSetting,
 } from '../controllers/employeeSettingsController.js';
+import { validateId, validateEmployeeSetting } from '../middleware/validators.js';
 
 const router = express.Router();
 
 router.get('/', getEmployeeSettings);
-router.get('/:id', getEmployeeSetting);
-router.post('/', addEmployeeSetting);
-router.put('/:id', editEmployeeSetting);
-router.delete('/:id', removeEmployeeSetting);
+router.get('/:id', validateId, getEmployeeSetting);
+router.post('/', validateEmployeeSetting, addEmployeeSetting);
+router.put('/:id', validateId, validateEmployeeSetting, editEmployeeSetting);
+router.delete('/:id', validateId, removeEmployeeSetting);
 
 export default router;

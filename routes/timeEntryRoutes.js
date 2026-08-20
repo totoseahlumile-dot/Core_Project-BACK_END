@@ -6,13 +6,14 @@ import {
   editTimeEntry,
   removeTimeEntry,
 } from '../controllers/timeEntryController.js';
+import { validateId, validateTimeEntry } from '../middleware/validators.js';
 
 const router = express.Router();
 
 router.get('/', getTimeEntries);
-router.get('/:id', getTimeEntry);
-router.post('/', addTimeEntry);
-router.put('/:id', editTimeEntry);
-router.delete('/:id', removeTimeEntry);
+router.get('/:id', validateId, getTimeEntry);
+router.post('/', validateTimeEntry, addTimeEntry);
+router.put('/:id', validateId, validateTimeEntry, editTimeEntry);
+router.delete('/:id', validateId, removeTimeEntry);
 
 export default router;

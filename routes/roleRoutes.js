@@ -6,14 +6,14 @@ import {
   editRole,
   removeRole,
 } from '../controllers/roleController.js';
+import { validateId, validateRole } from '../middleware/validators.js';
 
 const router = express.Router();
 
 router.get('/', getRoles);
-router.get('/:id', getRole);
-router.post('/', addRole);
-router.put('/:id', editRole);
-router.delete('/:id', removeRole);
+router.get('/:id', validateId, getRole);
+router.post('/', validateRole, addRole);
+router.put('/:id', validateId, validateRole, editRole);
+router.delete('/:id', validateId, removeRole);
 
 export default router;
-
