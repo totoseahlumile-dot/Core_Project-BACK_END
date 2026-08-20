@@ -8,6 +8,7 @@ export const getAllEmployeeSettings = async () => {
 };
 
 export const getEmployeeSettingById = async (id) => {
+  if (!id) throw new Error('Employee setting ID is required');
   const [rows] = await db.query(
     'SELECT * FROM employee_settings WHERE employee_setting_id = ?',
     [id]
@@ -17,6 +18,11 @@ export const getEmployeeSettingById = async (id) => {
 
 export const createEmployeeSetting = async (data) => {
   const { employee_id, setting_key, setting_value } = data;
+  
+  if (!employee_id || !setting_key || !setting_value) {
+    throw new Error('Employee ID, setting key, and value are required');
+  }
+  
   const [result] = await db.query(
     `INSERT INTO employee_settings (employee_id, setting_key, setting_value)
      VALUES (?, ?, ?)`,
@@ -26,6 +32,8 @@ export const createEmployeeSetting = async (data) => {
 };
 
 export const updateEmployeeSetting = async (id, data) => {
+  if (!id) throw new Error('Employee setting ID is required');
+  
   const { employee_id, setting_key, setting_value } = data;
   const [result] = await db.query(
     `UPDATE employee_settings
@@ -37,6 +45,7 @@ export const updateEmployeeSetting = async (id, data) => {
 };
 
 export const deleteEmployeeSetting = async (id) => {
+  if (!id) throw new Error('Employee setting ID is required');
   const [result] = await db.query(
     'DELETE FROM employee_settings WHERE employee_setting_id = ?',
     [id]

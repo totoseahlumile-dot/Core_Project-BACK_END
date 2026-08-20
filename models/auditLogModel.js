@@ -8,6 +8,7 @@ export const getAllAuditLogs = async () => {
 };
 
 export const getAuditLogById = async (id) => {
+  if (!id) throw new Error('Audit log ID is required');
   const [rows] = await db.query(
     'SELECT * FROM audit_log WHERE audit_id = ?',
     [id]
@@ -17,6 +18,11 @@ export const getAuditLogById = async (id) => {
 
 export const createAuditLog = async (data) => {
   const { user_id, action_type, table_name, record_id, old_value, new_value } = data;
+  
+  if (!action_type || !table_name) {
+    throw new Error('Action type and table name are required');
+  }
+  
   const [result] = await db.query(
     `INSERT INTO audit_log (user_id, action_type, table_name, record_id, old_value, new_value)
      VALUES (?, ?, ?, ?, ?, ?)`,
@@ -26,6 +32,8 @@ export const createAuditLog = async (data) => {
 };
 
 export const updateAuditLog = async (id, data) => {
+  if (!id) throw new Error('Audit log ID is required');
+  
   const { user_id, action_type, table_name, record_id, old_value, new_value } = data;
   const [result] = await db.query(
     `UPDATE audit_log
@@ -37,6 +45,7 @@ export const updateAuditLog = async (id, data) => {
 };
 
 export const deleteAuditLog = async (id) => {
+  if (!id) throw new Error('Audit log ID is required');
   const [result] = await db.query(
     'DELETE FROM audit_log WHERE audit_id = ?',
     [id]

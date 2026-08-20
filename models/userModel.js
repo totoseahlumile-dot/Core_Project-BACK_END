@@ -8,6 +8,7 @@ export const getAllUsers = async () => {
 };
 
 export const getUserById = async (id) => {
+  if (!id) throw new Error('User ID is required');
   const [rows] = await db.query(
     'SELECT * FROM users WHERE user_id = ?',
     [id]
@@ -17,6 +18,11 @@ export const getUserById = async (id) => {
 
 export const createUser = async (data) => {
   const { user_name, user_email } = data;
+  
+  if (!user_name || !user_email) {
+    throw new Error('Username and email are required');
+  }
+  
   const [result] = await db.query(
     `INSERT INTO users (user_name, user_email)
      VALUES (?, ?)`,
@@ -26,6 +32,8 @@ export const createUser = async (data) => {
 };
 
 export const updateUser = async (id, data) => {
+  if (!id) throw new Error('User ID is required');
+  
   const { user_name, user_email } = data;
   const [result] = await db.query(
     `UPDATE users
@@ -37,6 +45,7 @@ export const updateUser = async (id, data) => {
 };
 
 export const deleteUser = async (id) => {
+  if (!id) throw new Error('User ID is required');
   const [result] = await db.query(
     'DELETE FROM users WHERE user_id = ?',
     [id]

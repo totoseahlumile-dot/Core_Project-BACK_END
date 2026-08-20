@@ -8,6 +8,7 @@ export const getAllRoles = async () => {
 };
 
 export const getRoleById = async (id) => {
+  if (!id) throw new Error('Role ID is required');
   const [rows] = await db.query(
     'SELECT * FROM roles WHERE role_id = ?',
     [id]
@@ -17,6 +18,9 @@ export const getRoleById = async (id) => {
 
 export const createRole = async (data) => {
   const { role_name, description } = data;
+  
+  if (!role_name) throw new Error('Role name is required');
+  
   const [result] = await db.query(
     `INSERT INTO roles (role_name, description)
      VALUES (?, ?)`,
@@ -26,6 +30,8 @@ export const createRole = async (data) => {
 };
 
 export const updateRole = async (id, data) => {
+  if (!id) throw new Error('Role ID is required');
+  
   const { role_name, description } = data;
   const [result] = await db.query(
     `UPDATE roles
@@ -37,6 +43,7 @@ export const updateRole = async (id, data) => {
 };
 
 export const deleteRole = async (id) => {
+  if (!id) throw new Error('Role ID is required');
   const [result] = await db.query(
     'DELETE FROM roles WHERE role_id = ?',
     [id]

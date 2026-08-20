@@ -8,6 +8,7 @@ export const getAllTimeEntries = async () => {
 };
 
 export const getTimeEntryById = async (id) => {
+  if (!id) throw new Error('Time entry ID is required');
   const [rows] = await db.query(
     'SELECT * FROM time_entries WHERE time_entry_id = ?',
     [id]
@@ -27,6 +28,10 @@ export const createTimeEntry = async (data) => {
     notes,
   } = data;
 
+  if (!employee_id || !start_time) {
+    throw new Error('Employee ID and start time are required');
+  }
+
   const [result] = await db.query(
     `INSERT INTO time_entries (
       employee_id, project_name, task_name, start_time, end_time,
@@ -38,6 +43,8 @@ export const createTimeEntry = async (data) => {
 };
 
 export const updateTimeEntry = async (id, data) => {
+  if (!id) throw new Error('Time entry ID is required');
+  
   const {
     employee_id,
     project_name,
@@ -60,6 +67,7 @@ export const updateTimeEntry = async (id, data) => {
 };
 
 export const deleteTimeEntry = async (id) => {
+  if (!id) throw new Error('Time entry ID is required');
   const [result] = await db.query(
     'DELETE FROM time_entries WHERE time_entry_id = ?',
     [id]

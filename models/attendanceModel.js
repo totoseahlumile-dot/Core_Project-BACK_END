@@ -8,6 +8,7 @@ export const getAllAttendance = async () => {
 };
 
 export const getAttendanceById = async (id) => {
+  if (!id) throw new Error('Attendance ID is required');
   const [rows] = await db.query(
     'SELECT * FROM attendance WHERE attendance_id = ?',
     [id]
@@ -17,6 +18,11 @@ export const getAttendanceById = async (id) => {
 
 export const createAttendance = async (data) => {
   const { employee_id, attendance_date, check_in, check_out, status, notes } = data;
+  
+  if (!employee_id || !attendance_date) {
+    throw new Error('Employee ID and attendance date are required');
+  }
+  
   const [result] = await db.query(
     `INSERT INTO attendance (employee_id, attendance_date, check_in, check_out, status, notes)
      VALUES (?, ?, ?, ?, ?, ?)`,
@@ -26,6 +32,8 @@ export const createAttendance = async (data) => {
 };
 
 export const updateAttendance = async (id, data) => {
+  if (!id) throw new Error('Attendance ID is required');
+  
   const { employee_id, attendance_date, check_in, check_out, status, notes } = data;
   const [result] = await db.query(
     `UPDATE attendance
@@ -37,6 +45,7 @@ export const updateAttendance = async (id, data) => {
 };
 
 export const deleteAttendance = async (id) => {
+  if (!id) throw new Error('Attendance ID is required');
   const [result] = await db.query(
     'DELETE FROM attendance WHERE attendance_id = ?',
     [id]

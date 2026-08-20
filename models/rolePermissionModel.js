@@ -8,6 +8,9 @@ export const getAllRolePermissions = async () => {
 };
 
 export const getRolePermissionById = async (roleId, permissionId) => {
+  if (!roleId || !permissionId) {
+    throw new Error('Role ID and Permission ID are required');
+  }
   const [rows] = await db.query(
     'SELECT * FROM role_permissions WHERE role_id = ? AND permission_id = ?',
     [roleId, permissionId]
@@ -17,6 +20,11 @@ export const getRolePermissionById = async (roleId, permissionId) => {
 
 export const addRolePermission = async (data) => {
   const { role_id, permission_id } = data;
+  
+  if (!role_id || !permission_id) {
+    throw new Error('Role ID and Permission ID are required');
+  }
+  
   const [result] = await db.query(
     `INSERT INTO role_permissions (role_id, permission_id)
      VALUES (?, ?)`,
@@ -26,6 +34,9 @@ export const addRolePermission = async (data) => {
 };
 
 export const removeRolePermission = async (roleId, permissionId) => {
+  if (!roleId || !permissionId) {
+    throw new Error('Role ID and Permission ID are required');
+  }
   const [result] = await db.query(
     'DELETE FROM role_permissions WHERE role_id = ? AND permission_id = ?',
     [roleId, permissionId]

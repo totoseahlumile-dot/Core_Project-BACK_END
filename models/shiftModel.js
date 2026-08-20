@@ -8,6 +8,7 @@ export const getAllShifts = async () => {
 };
 
 export const getShiftById = async (id) => {
+  if (!id) throw new Error('Shift ID is required');
   const [rows] = await db.query(
     'SELECT * FROM shifts WHERE shift_id = ?',
     [id]
@@ -17,6 +18,11 @@ export const getShiftById = async (id) => {
 
 export const createShift = async (data) => {
   const { employee_id, shift_date, start_time, end_time, location, status, notes } = data;
+  
+  if (!employee_id || !shift_date || !start_time || !end_time) {
+    throw new Error('Employee ID, shift date, start time, and end time are required');
+  }
+  
   const [result] = await db.query(
     `INSERT INTO shifts (employee_id, shift_date, start_time, end_time, location, status, notes)
      VALUES (?, ?, ?, ?, ?, ?, ?)`,
@@ -26,6 +32,8 @@ export const createShift = async (data) => {
 };
 
 export const updateShift = async (id, data) => {
+  if (!id) throw new Error('Shift ID is required');
+  
   const { employee_id, shift_date, start_time, end_time, location, status, notes } = data;
   const [result] = await db.query(
     `UPDATE shifts
@@ -38,6 +46,7 @@ export const updateShift = async (id, data) => {
 };
 
 export const deleteShift = async (id) => {
+  if (!id) throw new Error('Shift ID is required');
   const [result] = await db.query(
     'DELETE FROM shifts WHERE shift_id = ?',
     [id]

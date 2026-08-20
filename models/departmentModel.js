@@ -8,6 +8,7 @@ export const getAllDepartments = async () => {
 };
 
 export const getDepartmentById = async (id) => {
+  if (!id) throw new Error('Department ID is required');
   const [rows] = await db.query(
     'SELECT * FROM departments WHERE department_id = ?',
     [id]
@@ -17,6 +18,9 @@ export const getDepartmentById = async (id) => {
 
 export const createDepartment = async (data) => {
   const { department_name, description } = data;
+  
+  if (!department_name) throw new Error('Department name is required');
+  
   const [result] = await db.query(
     `INSERT INTO departments (department_name, description)
      VALUES (?, ?)`,
@@ -26,6 +30,8 @@ export const createDepartment = async (data) => {
 };
 
 export const updateDepartment = async (id, data) => {
+  if (!id) throw new Error('Department ID is required');
+  
   const { department_name, description } = data;
   const [result] = await db.query(
     `UPDATE departments
@@ -37,6 +43,7 @@ export const updateDepartment = async (id, data) => {
 };
 
 export const deleteDepartment = async (id) => {
+  if (!id) throw new Error('Department ID is required');
   const [result] = await db.query(
     'DELETE FROM departments WHERE department_id = ?',
     [id]

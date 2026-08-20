@@ -8,6 +8,7 @@ export const getAllPayslips = async () => {
 };
 
 export const getPayslipById = async (id) => {
+  if (!id) throw new Error('Payslip ID is required');
   const [rows] = await db.query(
     'SELECT * FROM payslips WHERE payslip_id = ?',
     [id]
@@ -17,6 +18,11 @@ export const getPayslipById = async (id) => {
 
 export const createPayslip = async (data) => {
   const { payroll_id, payslip_number, file_path } = data;
+  
+  if (!payroll_id || !payslip_number) {
+    throw new Error('Payroll ID and payslip number are required');
+  }
+  
   const [result] = await db.query(
     `INSERT INTO payslips (payroll_id, payslip_number, file_path)
      VALUES (?, ?, ?)`,
@@ -26,6 +32,8 @@ export const createPayslip = async (data) => {
 };
 
 export const updatePayslip = async (id, data) => {
+  if (!id) throw new Error('Payslip ID is required');
+  
   const { payroll_id, payslip_number, file_path } = data;
   const [result] = await db.query(
     `UPDATE payslips
@@ -37,6 +45,7 @@ export const updatePayslip = async (id, data) => {
 };
 
 export const deletePayslip = async (id) => {
+  if (!id) throw new Error('Payslip ID is required');
   const [result] = await db.query(
     'DELETE FROM payslips WHERE payslip_id = ?',
     [id]

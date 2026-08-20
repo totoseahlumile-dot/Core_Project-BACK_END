@@ -8,6 +8,7 @@ export const getAllLeaveTypes = async () => {
 };
 
 export const getLeaveTypeById = async (id) => {
+  if (!id) throw new Error('Leave type ID is required');
   const [rows] = await db.query(
     'SELECT * FROM leave_types WHERE leave_type_id = ?',
     [id]
@@ -17,6 +18,9 @@ export const getLeaveTypeById = async (id) => {
 
 export const createLeaveType = async (data) => {
   const { leave_type_name, description, paid, default_days_per_year } = data;
+  
+  if (!leave_type_name) throw new Error('Leave type name is required');
+  
   const [result] = await db.query(
     `INSERT INTO leave_types (leave_type_name, description, paid, default_days_per_year)
      VALUES (?, ?, ?, ?)`,
@@ -26,6 +30,8 @@ export const createLeaveType = async (data) => {
 };
 
 export const updateLeaveType = async (id, data) => {
+  if (!id) throw new Error('Leave type ID is required');
+  
   const { leave_type_name, description, paid, default_days_per_year } = data;
   const [result] = await db.query(
     `UPDATE leave_types
@@ -37,6 +43,7 @@ export const updateLeaveType = async (id, data) => {
 };
 
 export const deleteLeaveType = async (id) => {
+  if (!id) throw new Error('Leave type ID is required');
   const [result] = await db.query(
     'DELETE FROM leave_types WHERE leave_type_id = ?',
     [id]

@@ -35,6 +35,7 @@ export const getAllPayroll = async () => {
 };
 
 export const getPayrollById = async (id) => {
+  if (!id) throw new Error('Payroll ID is required');
   const [rows] = await db.query(
     'SELECT * FROM payroll WHERE payroll_id = ?',
     [id]
@@ -43,6 +44,10 @@ export const getPayrollById = async (id) => {
 };
 
 export const createPayroll = async (data) => {
+  if (!data.employee_id || !data.pay_period_start || !data.pay_period_end || data.base_salary == null) {
+    throw new Error('Employee ID, pay period dates, and base salary are required');
+  }
+  
   const payload = normalizePayroll(data);
   const [result] = await db.query(
     `INSERT INTO payroll (
@@ -70,6 +75,8 @@ export const createPayroll = async (data) => {
 };
 
 export const updatePayroll = async (id, data) => {
+  if (!id) throw new Error('Payroll ID is required');
+  
   const payload = normalizePayroll(data);
   const [result] = await db.query(
     `UPDATE payroll
@@ -98,6 +105,7 @@ export const updatePayroll = async (id, data) => {
 };
 
 export const deletePayroll = async (id) => {
+  if (!id) throw new Error('Payroll ID is required');
   const [result] = await db.query(
     'DELETE FROM payroll WHERE payroll_id = ?',
     [id]

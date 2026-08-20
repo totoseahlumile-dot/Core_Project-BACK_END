@@ -8,6 +8,7 @@ export const getAllPerformanceReviews = async () => {
 };
 
 export const getPerformanceReviewById = async (id) => {
+  if (!id) throw new Error('Performance review ID is required');
   const [rows] = await db.query(
     'SELECT * FROM performance_reviews WHERE review_id = ?',
     [id]
@@ -28,6 +29,10 @@ export const createPerformanceReview = async (data) => {
     review_date,
   } = data;
 
+  if (!review_cycle_id || !employee_id || !reviewer_id) {
+    throw new Error('Review cycle ID, employee ID, and reviewer ID are required');
+  }
+
   const [result] = await db.query(
     `INSERT INTO performance_reviews (
       review_cycle_id, employee_id, reviewer_id, rating,
@@ -39,6 +44,8 @@ export const createPerformanceReview = async (data) => {
 };
 
 export const updatePerformanceReview = async (id, data) => {
+  if (!id) throw new Error('Performance review ID is required');
+  
   const {
     review_cycle_id,
     employee_id,
@@ -62,6 +69,7 @@ export const updatePerformanceReview = async (id, data) => {
 };
 
 export const deletePerformanceReview = async (id) => {
+  if (!id) throw new Error('Performance review ID is required');
   const [result] = await db.query(
     'DELETE FROM performance_reviews WHERE review_id = ?',
     [id]

@@ -8,6 +8,7 @@ export const getAllPositions = async () => {
 };
 
 export const getPositionById = async (id) => {
+  if (!id) throw new Error('Position ID is required');
   const [rows] = await db.query(
     'SELECT * FROM positions WHERE position_id = ?',
     [id]
@@ -17,6 +18,11 @@ export const getPositionById = async (id) => {
 
 export const createPosition = async (data) => {
   const { department_id, position_title, description } = data;
+  
+  if (!department_id || !position_title) {
+    throw new Error('Department ID and position title are required');
+  }
+  
   const [result] = await db.query(
     `INSERT INTO positions (department_id, position_title, description)
      VALUES (?, ?, ?)`,
@@ -26,6 +32,8 @@ export const createPosition = async (data) => {
 };
 
 export const updatePosition = async (id, data) => {
+  if (!id) throw new Error('Position ID is required');
+  
   const { department_id, position_title, description } = data;
   const [result] = await db.query(
     `UPDATE positions
@@ -37,6 +45,7 @@ export const updatePosition = async (id, data) => {
 };
 
 export const deletePosition = async (id) => {
+  if (!id) throw new Error('Position ID is required');
   const [result] = await db.query(
     'DELETE FROM positions WHERE position_id = ?',
     [id]

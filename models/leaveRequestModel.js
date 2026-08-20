@@ -8,6 +8,7 @@ export const getAllLeaveRequests = async () => {
 };
 
 export const getLeaveRequestById = async (id) => {
+  if (!id) throw new Error('Leave request ID is required');
   const [rows] = await db.query(
     'SELECT * FROM leave_requests WHERE leave_request_id = ?',
     [id]
@@ -27,6 +28,10 @@ export const createLeaveRequest = async (data) => {
     reviewed_at,
   } = data;
 
+  if (!employee_id || !leave_type_id || !start_date || !end_date) {
+    throw new Error('Employee ID, leave type, start date, and end date are required');
+  }
+
   const [result] = await db.query(
     `INSERT INTO leave_requests (
       employee_id, leave_type_id, start_date, end_date,
@@ -38,6 +43,8 @@ export const createLeaveRequest = async (data) => {
 };
 
 export const updateLeaveRequest = async (id, data) => {
+  if (!id) throw new Error('Leave request ID is required');
+  
   const {
     employee_id,
     leave_type_id,
@@ -60,10 +67,10 @@ export const updateLeaveRequest = async (id, data) => {
 };
 
 export const deleteLeaveRequest = async (id) => {
+  if (!id) throw new Error('Leave request ID is required');
   const [result] = await db.query(
     'DELETE FROM leave_requests WHERE leave_request_id = ?',
     [id]
   );
   return result.affectedRows;
 };
-

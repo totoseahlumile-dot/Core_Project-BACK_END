@@ -8,6 +8,7 @@ export const getAllCompanySettings = async () => {
 };
 
 export const getCompanySettingById = async (id) => {
+  if (!id) throw new Error('Company setting ID is required');
   const [rows] = await db.query(
     'SELECT * FROM company_settings WHERE setting_id = ?',
     [id]
@@ -17,6 +18,11 @@ export const getCompanySettingById = async (id) => {
 
 export const createCompanySetting = async (data) => {
   const { setting_key, setting_value } = data;
+  
+  if (!setting_key || !setting_value) {
+    throw new Error('Setting key and value are required');
+  }
+  
   const [result] = await db.query(
     `INSERT INTO company_settings (setting_key, setting_value)
      VALUES (?, ?)`,
@@ -26,6 +32,8 @@ export const createCompanySetting = async (data) => {
 };
 
 export const updateCompanySetting = async (id, data) => {
+  if (!id) throw new Error('Company setting ID is required');
+  
   const { setting_key, setting_value } = data;
   const [result] = await db.query(
     `UPDATE company_settings
@@ -37,6 +45,7 @@ export const updateCompanySetting = async (id, data) => {
 };
 
 export const deleteCompanySetting = async (id) => {
+  if (!id) throw new Error('Company setting ID is required');
   const [result] = await db.query(
     'DELETE FROM company_settings WHERE setting_id = ?',
     [id]

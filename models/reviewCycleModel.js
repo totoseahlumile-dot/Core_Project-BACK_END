@@ -8,6 +8,7 @@ export const getAllReviewCycles = async () => {
 };
 
 export const getReviewCycleById = async (id) => {
+  if (!id) throw new Error('Review cycle ID is required');
   const [rows] = await db.query(
     'SELECT * FROM review_cycles WHERE review_cycle_id = ?',
     [id]
@@ -17,6 +18,11 @@ export const getReviewCycleById = async (id) => {
 
 export const createReviewCycle = async (data) => {
   const { cycle_name, cycle_type, start_date, end_date, status } = data;
+  
+  if (!cycle_name || !start_date || !end_date) {
+    throw new Error('Cycle name, start date, and end date are required');
+  }
+
   const [result] = await db.query(
     `INSERT INTO review_cycles (cycle_name, cycle_type, start_date, end_date, status)
      VALUES (?, ?, ?, ?, ?)`,
@@ -26,6 +32,8 @@ export const createReviewCycle = async (data) => {
 };
 
 export const updateReviewCycle = async (id, data) => {
+  if (!id) throw new Error('Review cycle ID is required');
+  
   const { cycle_name, cycle_type, start_date, end_date, status } = data;
   const [result] = await db.query(
     `UPDATE review_cycles
@@ -37,6 +45,7 @@ export const updateReviewCycle = async (id, data) => {
 };
 
 export const deleteReviewCycle = async (id) => {
+  if (!id) throw new Error('Review cycle ID is required');
   const [result] = await db.query(
     'DELETE FROM review_cycles WHERE review_cycle_id = ?',
     [id]

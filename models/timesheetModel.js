@@ -8,6 +8,7 @@ export const getAllTimesheets = async () => {
 };
 
 export const getTimesheetById = async (id) => {
+  if (!id) throw new Error('Timesheet ID is required');
   const [rows] = await db.query(
     'SELECT * FROM timesheets WHERE timesheet_id = ?',
     [id]
@@ -17,6 +18,11 @@ export const getTimesheetById = async (id) => {
 
 export const createTimesheet = async (data) => {
   const { employee_id, work_date, hours_worked, overtime_hours, description, status, approved_by, approved_at } = data;
+  
+  if (!employee_id || !work_date) {
+    throw new Error('Employee ID and work date are required');
+  }
+  
   const [result] = await db.query(
     `INSERT INTO timesheets (employee_id, work_date, hours_worked, overtime_hours, description, status, approved_by, approved_at)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -26,6 +32,8 @@ export const createTimesheet = async (data) => {
 };
 
 export const updateTimesheet = async (id, data) => {
+  if (!id) throw new Error('Timesheet ID is required');
+  
   const { employee_id, work_date, hours_worked, overtime_hours, description, status, approved_by, approved_at } = data;
   const [result] = await db.query(
     `UPDATE timesheets
@@ -37,6 +45,7 @@ export const updateTimesheet = async (id, data) => {
 };
 
 export const deleteTimesheet = async (id) => {
+  if (!id) throw new Error('Timesheet ID is required');
   const [result] = await db.query(
     'DELETE FROM timesheets WHERE timesheet_id = ?',
     [id]
