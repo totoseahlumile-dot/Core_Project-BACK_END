@@ -1,30 +1,34 @@
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
+import * as User from '../models/userModel.js';
+import jwt from 'jsonwebtoken';
 
-exports.register = async (req, res) => {
+export const register = async (req, res, next) => {
   try {
-    let { username, email, password, roleId } = req.body;
+    let { email, password, employee_id, role_id } = req.body;
 
-    if (!username || !email || !password || !roleId) {
+    if (!email || !password || !employee_id || !role_id) {
       return res.status(400).json({ error: 'All fields are required.' });
     }
 
-    username = username.trim();
     email = email.trim().toLowerCase();
 
     const existingUser = await User.findByEmail(email);
     if (existingUser) {
-      return res.status(400).json({ error: 'Email already registered.' });
+      return res.status(409).json({ error: 'Email already registered.' });
     }
 
-    const userId = await User.create(username, email, password, roleId);
-    res.status(201).json({ message: 'User registered successfully!', userId });
-  } catch (error) {
-    res.status(500).json({ error: 'Registration failed.', details: error.message });
+    const password_hash = await User.hashPassword(password);
+    const userId = await User.createUser({ employee_id, role_id, email, password_hash });
+
+    res.status(201).json({ message: 'User registered successfully', user_id: userId });
+  } catch (err) {
+    if (err.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({ error: 'This employee already has a user account.' });
+    }
+    next(err);
   }
 };
 
-exports.login = async (req, res) => {
+export const login = async (req, res, next) => {
   try {
     let { email, password } = req.body;
 
@@ -50,8 +54,8 @@ exports.login = async (req, res) => {
       { expiresIn: '8h' }
     );
 
-    res.json({ message: 'Login successful!', token, role: user.role_name });
-  } catch (error) {
-    res.status(500).json({ error: 'Login failed.', details: error.message });
+    res.json({ message: 'Login successful', token, role: user.role_name });
+  } catch (err) {
+    next(err);
   }
 };
