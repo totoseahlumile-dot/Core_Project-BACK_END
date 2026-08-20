@@ -30,7 +30,10 @@ import db from './config/db.js';
 import errorHandler, { notFoundHandler } from './middleware/errorHandler.js';
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'http://127.0.0.1:5501',
+  credentials: true,
+}));
 app.use(express.json());
 
 app.use('/api/employees', employeeRoutes);
@@ -57,6 +60,7 @@ app.use('/api/auth', authRoutes);
 
 const port = Number(process.env.PORT || 3000);
 
+// for testing database connection
 app.get('/api/test-db', async (req, res, next) => {
   try {
     const [rows] = await db.query('SELECT COUNT(*) AS count FROM employees');
