@@ -25,3 +25,21 @@ export const authorizeRoles = (...allowedRoles) => {
     next();
   };
 };
+
+export const restrictNonHrAccess = (req, res, next) => {
+  const isHr = String(req.user?.role || '').toUpperCase().includes('HR');
+  if (isHr) return next();
+
+  const readOnlyPaths = ['/employees', '/leave-requests', '/leave-types', '/payroll', '/payslips', '/employee-settings', '/attendance'];
+  const isAllowedRead = req.method === 'GET' && readOnlyPaths.some(
+    (path) => req.path === path || req.path.startsWith(`${path}/`)
+  );
+  const isOwnLeaveSubmission = req.method === 'POST' && req.path === '/leave-requests';
+  const isOwnSettingsWrite = ['POST', 'PUT', 'DELETE'].includes(req.method)
+    && (req.path === '/employee-settings' || req.path.startsWith('/employee-settings/'));
+  const isClockAction = req.method === 'POST'
+    && ['/attendance/clock-in', '/attendance/clock-out'].includes(req.path);
+
+  if (isAllowedRead || isOwnLeaveSubmission || isOwnSettingsWrite || isClockAction) return next();
+  return res.status(403).json({ error: 'Non-HR employees may only access time-off requests and their own payslips.' });
+};

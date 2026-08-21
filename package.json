@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node --test api-routes.test.js",
-    "dev": "nodemon server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "set-password": "node set-password.js",
+    "seed-demo-logins": "node seed-demo-logins.js",
+    "migrate-payroll": "node migrate-payroll-deductions.js"
   },
   "repository": {
     "type": "git",

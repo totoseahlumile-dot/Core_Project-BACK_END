@@ -20,13 +20,23 @@ export const getTimesheet = async (req, res, next) => {
 };
 
 export const addTimesheet = async (req, res, next) => {
-  const { employee_id, work_date } = req.body;
+  const { employee_id, work_date, hours_worked } = req.body;
   if (!employee_id || !work_date) {
     return res.status(400).json({ error: 'Employee ID and work date are required' });
   }
+  if (!Number.isFinite(Number(hours_worked)) || Number(hours_worked) <= 0 || Number(hours_worked) > 24) {
+    return res.status(400).json({ error: 'Hours worked must be between 0 and 24' });
+  }
+
+  // Employees submit logged hours for HR review. "Pending" is a UI label,
+  // but the database enum intentionally calls that workflow state "Submitted".
+  const status = req.body.status === 'Pending' ? 'Submitted' : (req.body.status || 'Submitted');
+  if (!['Draft', 'Submitted', 'Approved', 'Rejected'].includes(status)) {
+    return res.status(400).json({ error: 'Invalid timesheet status' });
+  }
 
   try {
-    const id = await Timesheet.createTimesheet(req.body);
+    const id = await Timesheet.createTimesheet({ ...req.body, status });
     res.status(201).json({ timesheet_id: id, message: 'Timesheet created' });
   } catch (err) {
     next(err);

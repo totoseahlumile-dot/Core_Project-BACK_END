@@ -8,7 +8,9 @@ const normalizePayroll = (data = {}) => {
   const hoursWorked = Number(data.hours_worked ?? 0);
   const overtimeHours = Number(data.overtime_hours ?? 0);
   const grossPay = Number(data.gross_pay ?? (baseSalary + overtimePay));
-  const netPay = Number(data.net_pay ?? (grossPay - leaveDeductions - otherDeductions));
+  const payeDeduction = Number(data.paye_deduction ?? (grossPay * 0.15));
+  const uifDeduction = Number(data.uif_deduction ?? (grossPay * 0.01));
+  const netPay = grossPay - payeDeduction - uifDeduction - leaveDeductions - otherDeductions;
 
   return {
     employee_id: data.employee_id,
@@ -20,6 +22,8 @@ const normalizePayroll = (data = {}) => {
     overtime_pay: overtimePay,
     leave_deductions: leaveDeductions,
     other_deductions: otherDeductions,
+    paye_deduction: payeDeduction,
+    uif_deduction: uifDeduction,
     gross_pay: grossPay,
     net_pay: netPay,
     payment_status: data.payment_status || 'Pending',
@@ -48,8 +52,9 @@ export const createPayroll = async (data) => {
     `INSERT INTO payroll (
       employee_id, pay_period_start, pay_period_end, base_salary,
       hours_worked, overtime_hours, overtime_pay, leave_deductions,
-      other_deductions, gross_pay, net_pay, payment_status, processed_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      other_deductions, paye_deduction, uif_deduction,
+      gross_pay, net_pay, payment_status, processed_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       payload.employee_id,
       payload.pay_period_start,
@@ -60,6 +65,8 @@ export const createPayroll = async (data) => {
       payload.overtime_pay,
       payload.leave_deductions,
       payload.other_deductions,
+      payload.paye_deduction,
+      payload.uif_deduction,
       payload.gross_pay,
       payload.net_pay,
       payload.payment_status,
@@ -75,7 +82,8 @@ export const updatePayroll = async (id, data) => {
     `UPDATE payroll
      SET employee_id = ?, pay_period_start = ?, pay_period_end = ?, base_salary = ?,
          hours_worked = ?, overtime_hours = ?, overtime_pay = ?, leave_deductions = ?,
-         other_deductions = ?, gross_pay = ?, net_pay = ?, payment_status = ?, processed_at = ?
+         other_deductions = ?, paye_deduction = ?, uif_deduction = ?,
+         gross_pay = ?, net_pay = ?, payment_status = ?, processed_at = ?
      WHERE payroll_id = ?`,
     [
       payload.employee_id,
@@ -87,6 +95,8 @@ export const updatePayroll = async (id, data) => {
       payload.overtime_pay,
       payload.leave_deductions,
       payload.other_deductions,
+      payload.paye_deduction,
+      payload.uif_deduction,
       payload.gross_pay,
       payload.net_pay,
       payload.payment_status,

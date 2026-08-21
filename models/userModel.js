@@ -72,3 +72,23 @@ export const deleteUser = async (id) => {
   const [result] = await db.query('DELETE FROM users WHERE user_id = ?', [id]);
   return result.affectedRows;
 };
+
+export const getUserWithPasswordById = async (id) => {
+  const [rows] = await db.query(
+    'SELECT user_id, employee_id, email, password_hash FROM users WHERE user_id = ? AND is_active = 1',
+    [id]
+  );
+  return rows[0];
+};
+
+export const getRegistrationIdentity = async (email) => {
+  const [rows] = await db.query(
+    `SELECT e.employee_id, r.role_id
+     FROM employees e
+     CROSS JOIN roles r
+     WHERE LOWER(e.email) = LOWER(?) AND r.role_name = 'Employee'
+     LIMIT 1`,
+    [email]
+  );
+  return rows[0];
+};

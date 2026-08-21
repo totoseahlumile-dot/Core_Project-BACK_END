@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { authenticateToken, authorizeRoles } from './middleware/authMiddleware.js';
+import { authenticateToken, restrictNonHrAccess } from './middleware/authMiddleware.js';
 import employeeRoutes from './routes/employeeRoutes.js';
 import departmentRoutes from './routes/departmentRoutes.js';
 import positionRoutes from './routes/positionRoutes.js';
@@ -30,11 +30,30 @@ import db from './config/db.js';
 import errorHandler, { notFoundHandler } from './middleware/errorHandler.js';
 
 const app = express();
+const defaultOrigins = ['http://127.0.0.1:5501', 'http://localhost:5501'];
+const allowedOrigins = (process.env.CORS_ORIGINS || defaultOrigins.join(','))
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 app.use(cors({
-  origin: 'http://127.0.0.1:5501',
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error(`Origin ${origin} is not allowed by CORS`));
+  },
   credentials: true,
 }));
 app.use(express.json());
+
+app.use('/api/auth', authRoutes);
+
+const port = Number(process.env.PORT || 3000);
+
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
+app.use('/api', authenticateToken, restrictNonHrAccess);
 
 app.use('/api/employees', employeeRoutes);
 app.use('/api/departments', departmentRoutes);
@@ -56,21 +75,6 @@ app.use('/api/users', userRoutes);
 app.use('/api/roles', roleRoutes);
 app.use('/api/permissions', permissionRoutes);
 app.use('/api/role-permissions', rolePermissionRoutes);
-app.use('/api/auth', authRoutes);
-
-const port = Number(process.env.PORT || 3000);
-
-// for testing database connection
-app.get('/api/test-db', async (req, res, next) => {
-  try {
-    const [rows] = await db.query('SELECT COUNT(*) AS count FROM employees');
-    res.json({ connected: true, employeeCount: rows[0].count });
-  } catch (err) {
-    next(err);
-  }
-});
-
-
 
 app.use(notFoundHandler);
 app.use(errorHandler);

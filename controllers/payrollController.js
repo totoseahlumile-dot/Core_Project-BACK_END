@@ -3,7 +3,8 @@ import * as Payroll from '../models/payrollModel.js';
 export const getPayroll = async (req, res, next) => {
   try {
     const payroll = await Payroll.getAllPayroll();
-    res.json(payroll);
+    const isHr = String(req.user?.role || '').toUpperCase().includes('HR');
+    res.json(isHr ? payroll : payroll.filter(record => Number(record.employee_id) === Number(req.user.employee_id)));
   } catch (err) {
     next(err);
   }
@@ -13,6 +14,10 @@ export const getPayrollById = async (req, res, next) => {
   try {
     const record = await Payroll.getPayrollById(req.params.id);
     if (!record) return res.status(404).json({ error: 'Payroll record not found' });
+    const isHr = String(req.user?.role || '').toUpperCase().includes('HR');
+    if (!isHr && Number(record.employee_id) !== Number(req.user.employee_id)) {
+      return res.status(403).json({ error: 'You may only view your own payroll records' });
+    }
     res.json(record);
   } catch (err) {
     next(err);

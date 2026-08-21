@@ -7,12 +7,33 @@ export const getAllPayslips = async () => {
   return rows;
 };
 
+export const getPayslipsByEmployeeId = async (employeeId) => {
+  const [rows] = await db.query(
+    `SELECT ps.* FROM payslips ps
+     JOIN payroll p ON p.payroll_id = ps.payroll_id
+     WHERE p.employee_id = ?
+     ORDER BY ps.generated_at DESC, ps.payslip_id DESC`,
+    [employeeId]
+  );
+  return rows;
+};
+
 export const getPayslipById = async (id) => {
   const [rows] = await db.query(
     'SELECT * FROM payslips WHERE payslip_id = ?',
     [id]
   );
   return rows[0];
+};
+
+export const payslipBelongsToEmployee = async (id, employeeId) => {
+  const [rows] = await db.query(
+    `SELECT ps.payslip_id FROM payslips ps
+     JOIN payroll p ON p.payroll_id = ps.payroll_id
+     WHERE ps.payslip_id = ? AND p.employee_id = ?`,
+    [id, employeeId]
+  );
+  return Boolean(rows[0]);
 };
 
 export const createPayslip = async (data) => {

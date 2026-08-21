@@ -17,10 +17,41 @@ const normalizeDate = (value) => {
 export const getAttendance = async (req, res, next) => {
   try {
     const attendance = await Attendance.getAllAttendance();
-    res.json(attendance);
+    const isHr = String(req.user?.role || '').toUpperCase().includes('HR');
+    res.json(isHr ? attendance : attendance.filter(record => Number(record.employee_id) === Number(req.user.employee_id)));
   } catch (err) {
     next(err);
   }
+};
+
+// The browser sends a time input as HH:mm, while MySQL stores check-in/out as
+// DATETIME. Combining it with the validated attendance date at this boundary
+// keeps storage consistent and prevents implicit, server-dependent conversion.
+const normalizeDateTime = (date, time) => {
+  if (!time) return null;
+  const match = String(time).match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+  if (!match) return null;
+  const [, hour, minute, second = '00'] = match;
+  if (Number(hour) > 23 || Number(minute) > 59 || Number(second) > 59) return null;
+  return `${date} ${hour.padStart(2, '0')}:${minute}:${second}`;
+};
+
+export const clockIn = async (req, res, next) => {
+  try {
+    const id = await Attendance.clockIn(req.user.employee_id);
+    if (!id) return res.status(409).json({ error: 'You are already clocked in today.' });
+    const record = await Attendance.getTodayAttendance(req.user.employee_id);
+    res.status(201).json({ message: 'Clock-in recorded.', attendance: record });
+  } catch (err) { next(err); }
+};
+
+export const clockOut = async (req, res, next) => {
+  try {
+    const id = await Attendance.clockOut(req.user.employee_id);
+    if (!id) return res.status(409).json({ error: 'Clock in first, or you have already clocked out.' });
+    const record = await Attendance.getTodayAttendance(req.user.employee_id);
+    res.json({ message: 'Clock-out recorded.', attendance: record });
+  } catch (err) { next(err); }
 };
 
 export const getAttendanceById = async (req, res, next) => {
@@ -50,8 +81,14 @@ export const addAttendance = async (req, res, next) => {
     return res.status(400).json({ error: 'Invalid attendance status' });
   }
 
+  const checkIn = normalizeDateTime(normalizedAttendanceDate, req.body.check_in);
+  const checkOut = normalizeDateTime(normalizedAttendanceDate, req.body.check_out);
+  if ((req.body.check_in && !checkIn) || (req.body.check_out && !checkOut)) {
+    return res.status(400).json({ error: 'Clock times must use a valid 24-hour HH:mm format' });
+  }
+
   try {
-    const id = await Attendance.createAttendance({ ...req.body, attendance_date: normalizedAttendanceDate });
+    const id = await Attendance.createAttendance({ ...req.body, attendance_date: normalizedAttendanceDate, check_in: checkIn, check_out: checkOut });
     res.status(201).json({ attendance_id: id, message: 'Attendance logged' });
   } catch (err) {
     if (err.code === 'ER_DUP_ENTRY') {

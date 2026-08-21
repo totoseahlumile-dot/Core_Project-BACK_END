@@ -9,7 +9,8 @@ const isValidDate = (value) => {
 export const getLeaveRequests = async (req, res, next) => {
   try {
     const records = await LeaveRequest.getAllLeaveRequests();
-    res.json(records);
+    const isHr = String(req.user?.role || '').toUpperCase().includes('HR');
+    res.json(isHr ? records : records.filter(record => Number(record.employee_id) === Number(req.user.employee_id)));
   } catch (err) {
     next(err);
   }
@@ -19,6 +20,10 @@ export const getLeaveRequest = async (req, res, next) => {
   try {
     const record = await LeaveRequest.getLeaveRequestById(req.params.id);
     if (!record) return res.status(404).json({ error: 'Leave request not found' });
+    const isHr = String(req.user?.role || '').toUpperCase().includes('HR');
+    if (!isHr && Number(record.employee_id) !== Number(req.user.employee_id)) {
+      return res.status(403).json({ error: 'You may only view your own leave requests' });
+    }
     res.json(record);
   } catch (err) {
     next(err);
@@ -26,6 +31,8 @@ export const getLeaveRequest = async (req, res, next) => {
 };
 
 export const addLeaveRequest = async (req, res, next) => {
+  const isHr = String(req.user?.role || '').toUpperCase().includes('HR');
+  if (!isHr) req.body.employee_id = req.user.employee_id;
   const { employee_id, leave_type_id, start_date, end_date } = req.body;
 
   if (!employee_id || !leave_type_id || !start_date || !end_date) {

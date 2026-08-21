@@ -2,7 +2,10 @@ import * as Payslip from '../models/payslipModel.js';
 
 export const getPayslips = async (req, res, next) => {
   try {
-    const slips = await Payslip.getAllPayslips();
+    const isHr = String(req.user?.role || '').toUpperCase().includes('HR');
+    const slips = isHr
+      ? await Payslip.getAllPayslips()
+      : await Payslip.getPayslipsByEmployeeId(req.user.employee_id);
     res.json(slips);
   } catch (err) {
     next(err);
@@ -13,6 +16,10 @@ export const getPayslip = async (req, res, next) => {
   try {
     const slip = await Payslip.getPayslipById(req.params.id);
     if (!slip) return res.status(404).json({ error: 'Payslip not found' });
+    const isHr = String(req.user?.role || '').toUpperCase().includes('HR');
+    if (!isHr && !(await Payslip.payslipBelongsToEmployee(req.params.id, req.user.employee_id))) {
+      return res.status(403).json({ error: 'You may only view your own payslips' });
+    }
     res.json(slip);
   } catch (err) {
     next(err);

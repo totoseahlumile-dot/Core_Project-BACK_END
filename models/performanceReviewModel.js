@@ -15,6 +15,22 @@ export const getPerformanceReviewById = async (id) => {
   return rows[0];
 };
 
+export const generateMissingReviews = async (reviewCycleId, reviewerId) => {
+  const [result] = await db.query(
+    `INSERT INTO performance_reviews
+      (review_cycle_id, employee_id, reviewer_id, status, review_date, comments)
+     SELECT ?, e.employee_id, ?, 'Draft', CURDATE(), 'Automatically generated review'
+     FROM employees e
+     WHERE e.employment_status = 'Active'
+       AND NOT EXISTS (
+         SELECT 1 FROM performance_reviews pr
+         WHERE pr.review_cycle_id = ? AND pr.employee_id = e.employee_id
+       )`,
+    [reviewCycleId, reviewerId, reviewCycleId]
+  );
+  return result.affectedRows;
+};
+
 export const createPerformanceReview = async (data) => {
   const {
     review_cycle_id,
