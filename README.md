@@ -202,10 +202,4 @@ Use individual strong passwords in a real production environment.
 - Foreign keys protect relationships and cascade dependent employee records
   where appropriate.
 
-## Presentation material
 
-- [Presentation guide](./PRESENTATION_GUIDE.md)
-- [Presentation guide PDF](./PRESENTATION_GUIDE.pdf)
-
-The guide includes the system architecture, a five-minute demonstration flow,
-technical decisions, common presentation questions, and a pre-demo checklist.
