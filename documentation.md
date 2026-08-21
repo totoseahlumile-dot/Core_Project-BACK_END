@@ -262,7 +262,7 @@ Content-Type: application/json
 
 {
   "email": "lungile.moyo@moderntech.com",
-  "password": "ABC123"
+  "password": "ABC12345"
 }
 ```
 
@@ -283,24 +283,7 @@ Authorization: Bearer YOUR_JWT_TOKEN
 
 ---
 
-##  Testing
-
-### Run Smoke Tests
-```bash
-node smoke-test.js
-```
-
-### Run CRUD Tests
-```bash
-node test-crud.js
-```
-
-### Test Database Connection
-```bash
-node test-db.js
-```
-
-### Get JWT Token
+## Get JWT Token
 ```bash
 npm run get-token
 ```
@@ -308,18 +291,6 @@ npm run get-token
 ---
 
 ## Deployment
-
-### Deploy to Render
-1. Create account on Render
-2. Click **New +** → **Web Service**
-3. Connect your GitHub repository
-4. Configure:
-   - **Name:** hr-api
-   - **Environment:** Node
-   - **Build Command:** `npm install`
-   - **Start Command:** `node server.js`
-5. Add environment variables from `.env`
-6. Click **Create Web Service**
 
 ### Deploy to Railway
 1. Create account on Railway
