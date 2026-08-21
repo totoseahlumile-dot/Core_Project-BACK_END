@@ -1,6 +1,10 @@
 import jwt from 'jsonwebtoken';
 
 export const authenticateToken = (req, res, next) => {
+  // JWTs arrive in the standard `Authorization: Bearer <token>` header. The
+  // verified payload is attached to the request so later middleware and
+  // controllers can enforce ownership and role rules without querying users
+  // again on every request.
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -27,10 +31,16 @@ export const authorizeRoles = (...allowedRoles) => {
 };
 
 export const restrictNonHrAccess = (req, res, next) => {
+  // This is the API-wide authorization boundary mounted before protected
+  // routes in server.js. HR users continue unrestricted; employees receive a
+  // deliberately small allow-list for self-service workflows. Controllers
+  // still filter records by req.user.employee_id to enforce row ownership.
   const isHr = String(req.user?.role || '').toUpperCase().includes('HR');
   if (isHr) return next();
 
   const readOnlyPaths = ['/employees', '/leave-requests', '/leave-types', '/payroll', '/payslips', '/employee-settings', '/attendance'];
+  // Match both a collection path and its child resources without accidentally
+  // allowing similarly prefixed routes (for example `/payroll-admin`).
   const isAllowedRead = req.method === 'GET' && readOnlyPaths.some(
     (path) => req.path === path || req.path.startsWith(`${path}/`)
   );

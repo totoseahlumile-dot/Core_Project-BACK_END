@@ -24,6 +24,9 @@ export const getTodayAttendance = async (employeeId) => {
 };
 
 export const clockIn = async (employeeId) => {
+  // The employee/date unique key guarantees one attendance row per day. If HR
+  // created that row in advance, clock-in completes it; otherwise it creates a
+  // new row. Returning null gives the controller a clean conflict signal.
   const current = await getTodayAttendance(employeeId);
   if (current) {
     if (current.check_in) return null;
@@ -41,6 +44,8 @@ export const clockIn = async (employeeId) => {
 };
 
 export const clockOut = async (employeeId) => {
+  // Clock-out is allowed only after clock-in and only once. Keeping this rule
+  // beside the query prevents callers from bypassing the workflow.
   const current = await getTodayAttendance(employeeId);
   if (!current?.check_in || current.check_out) return null;
   const [result] = await db.query(

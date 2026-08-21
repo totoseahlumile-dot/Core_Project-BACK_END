@@ -31,6 +31,9 @@ import errorHandler, { notFoundHandler } from './middleware/errorHandler.js';
 
 const app = express();
 const defaultOrigins = ['http://127.0.0.1:5501', 'http://localhost:5501'];
+// Production and local frontends are configured as a comma-separated allow
+// list. Requests without an Origin header are retained for tools, health
+// checks, and server-to-server clients; browsers must match an allowed origin.
 const allowedOrigins = (process.env.CORS_ORIGINS || defaultOrigins.join(','))
   .split(',')
   .map((origin) => origin.trim())
@@ -53,6 +56,9 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+// Authentication and the employee/HR policy apply once here, before every
+// protected resource router. This avoids inconsistent security checks caused
+// by mounting the same middleware independently on twenty route files.
 app.use('/api', authenticateToken, restrictNonHrAccess);
 
 app.use('/api/employees', employeeRoutes);

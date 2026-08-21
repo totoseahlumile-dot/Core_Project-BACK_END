@@ -10,6 +10,10 @@ for (const [key, value] of Object.entries(dotenvResult.parsed ?? {})) {
   if (!process.env[key]) process.env[key] = value;
 }
 
+// A pool reuses a bounded number of MySQL connections across concurrent HTTP
+// requests. `waitForConnections` queues short bursts instead of opening an
+// unbounded connection per request, which is especially important on hosted
+// databases with strict connection limits.
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,

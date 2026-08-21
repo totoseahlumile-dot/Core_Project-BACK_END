@@ -16,6 +16,9 @@ export const getPerformanceReviewById = async (id) => {
 };
 
 export const generateMissingReviews = async (reviewCycleId, reviewerId) => {
+  // Generate the whole cycle atomically in one INSERT...SELECT. NOT EXISTS,
+  // together with the database unique key, makes repeated button clicks
+  // idempotent: only active employees without a review receive one.
   const [result] = await db.query(
     `INSERT INTO performance_reviews
       (review_cycle_id, employee_id, reviewer_id, status, review_date, comments)
