@@ -178,11 +178,23 @@ Use the HR Manager account:
 Email: lungile.moyo@moderntech.com
 Password: ABC12345
 ```
-Any Employee Account
-```text
-Email: name.surname@moderntech.com
-Password: ABC12345
-```
+### Any Employee Account
+
+All employee demo accounts use the password `ABC12345`:
+
+| Employee number | Employee | Email |
+| --- | --- | --- |
+| EMP001 | Sibongile Nkosi | `sibongile.nkosi@moderntech.com` |
+| EMP003 | Thabo Molefe | `thabo.molefe@moderntech.com` |
+| EMP004 | Keshav Naidoo | `keshav.naidoo@moderntech.com` |
+| EMP005 | Zanele Khumalo | `zanele.khumalo@moderntech.com` |
+| EMP006 | Sipho Zulu | `sipho.zulu@moderntech.com` |
+| EMP007 | Naledi Moeketsi | `naledi.moeketsi@moderntech.com` |
+| EMP008 | Farai Gumbo | `farai.gumbo@moderntech.com` |
+| EMP009 | Karabo Dlamini | `karabo.dlamini@moderntech.com` |
+| EMP010 | Fatima Patel | `fatima.patel@moderntech.com` |
+| EMP012 | Ahlumile Totose | `totose.ahlumile@moderntech.com` |
+| EMP013 | Kirsten Layters | `kirsten.layters@moderntech.com` |
 
 The demo password is intended only for demonstrations and local development.
 Use individual strong passwords in a real production environment.
