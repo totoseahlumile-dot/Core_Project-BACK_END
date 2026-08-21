@@ -178,6 +178,11 @@ Use the HR Manager account:
 Email: lungile.moyo@moderntech.com
 Password: ABC12345
 ```
+Any Employee Account
+```text
+Email: name.surname@moderntech.com
+Password: ABC12345
+```
 
 The demo password is intended only for demonstrations and local development.
 Use individual strong passwords in a real production environment.
