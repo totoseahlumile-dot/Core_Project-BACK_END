@@ -7,6 +7,7 @@ payroll, payslips, timesheets, scheduling, and performance-review workflows.
 - **Live frontend:** https://nuriyahd.github.io/core-project/
 - **API health check:** https://passionate-integrity-production-55e8.up.railway.app/api/health
 - **Frontend repository:** https://github.com/NuriyahD/core-project
+- **SDLC:** https://docs.google.com/document/d/14HppWF4ZQr7QjfzD87FMC6GChG4gXX3zvSdEkyJf3YM/edit?usp=sharing
 
 ## System architecture
 
