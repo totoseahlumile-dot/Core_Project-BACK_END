@@ -392,7 +392,7 @@ CREATE TABLE `leave_types` (
 
 LOCK TABLES `leave_types` WRITE;
 /*!40000 ALTER TABLE `leave_types` DISABLE KEYS */;
-INSERT INTO `leave_types` VALUES (1,'Annual Leave','Annual vacation leave',1,15.00),(2,'Sick Leave','Leave due to illness',1,30.00),(3,'Family Responsibility','Family responsibility leave',1,3.00),(4,'Personal Leave','Personal time off',0,5.00),(5,'Unpaid Leave','Unpaid time away from work',0,30.00),(6,'TestLeave1787255036110','Smoke test leave',1,10.00),(7,'TestLeave1787255229819','Smoke test leave',1,10.00),(8,'TestLeave1787255287364','Smoke test leave',1,10.00),(9,'TestLeave1787255340717','Smoke test leave',1,10.00);
+INSERT INTO `leave_types` VALUES (1,'Annual Leave','Annual vacation leave',1,15.00),(2,'Sick Leave','Leave due to illness',1,30.00),(3,'Family Responsibility','Family responsibility leave',1,3.00),(4,'Personal Leave','Personal time off',0,5.00),(5,'Unpaid Leave','Unpaid time away from work',0,30.00);
 /*!40000 ALTER TABLE `leave_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
